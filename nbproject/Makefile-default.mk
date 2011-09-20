@@ -64,7 +64,7 @@ MP_AR_DIR=C:\\Program\ Files\ \(x86\)\\HI-TECH\ Software\\PICC-18\\PRO\\9.66\\bi
 .build-conf: ${BUILD_SUBPROJECTS}
 	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/ButtonDebounce.X.${IMAGE_TYPE}.cof
 
-MP_PROCESSOR_OPTION=18F1320
+MP_PROCESSOR_OPTION=18F4550
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: assemble
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)

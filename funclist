@@ -1,10 +1,9 @@
-_SysClock_ISR: CODE, 1172 0 34
-_main: CODE, 1022 0 98
-_UpdateState: CODE, 54 0 460
-_isr: CODE, 770 0 136
-_setup: CODE, 514 0 256
-_SysClock_Start: CODE, 1228 0 6
-___wmul: CODE, 906 0 116
-_SysClock_Config: CODE, 1206 0 22
-_ReadButton: CODE, 1120 0 52
-Total: 1180
+i2_UpdateOutput: CODE, 896 0 230
+_UpdateOutput: CODE, 666 0 230
+_main: CODE, 1492 0 30
+_GetState: CODE, 78 0 314
+_isr: CODE, 1300 0 158
+_setup: CODE, 1126 0 174
+_SysClock_Config: CODE, 1458 0 34
+_ReadButton: CODE, 392 0 274
+Total: 1444

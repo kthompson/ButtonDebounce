@@ -6,8 +6,6 @@
  */
 
 #include <htc.h>
-#include <stdio.h>
-#include <stdarg.h>
 #include "main.h"
 #include "clock.h"
 
@@ -15,133 +13,156 @@ void main(void) {
     //unsigned char state;
     
     setup();
-    
-    GIEH = 1; //enable high priority interrupt
-    SysClock_Start();
-
+    UpdateOutput(15);
     while(1)
     {
-        if (!Flags.Bit.Timeout)
-            continue;
+        //if (!Timeout)
+        //    return;
 
-        Flags.Bit.Timeout = 0;           //clear timeout indicor
+        //Timeout = 0;           //clear timeout indicor
 
         
-        //state = UpdateState();
-        
-        //if(state != -1)
-        //    LATB = state;
+    }
+}
 
-        //continue;
-        
-        switch(UpdateState()){
-            case 0:
-                LED1 = 0;
-                LED2 = 0;
-                break;
-            case 1:
-                LED1 = 1;
-                LED2 = 0;
-                break;
-            case 2:
-                LED1 = 0;
-                LED2 = 1;
-                break;
-            case 3:
-                LED1 = 1;
-                LED2 = 1;
-                break;
-        }
+void loop(void) {
+
+}
+void ButtonTest(int value) {   
+    if(ReadButton(value) == 1)
+    {
+        UpdateOutput(value);
     }
 }
 
 void setup(void) {
-    int i;
-    IDLEN = 0;
-    //enable internal RC clock
-    SCS1 = 1;
-    SCS0 = 1;
-    //set internal clock to 8MHz
-    IRCF0 = 1;
-    IRCF1 = 1;
-    IRCF2 = 1;
-    //sleep activates the clock rate
-    SLEEP();
+    int i;  
 
-    //Disable A/D Conversion
-    PCFG0 = 1;
-    PCFG1 = 1;
-    PCFG2 = 1;
+    //IDLEN = 0;
+    //enable internal RC clock
+    //SCS1 = 1;
+    //SCS0 = 1;
+    //set postscaler to 8MHz
+    //IRCF0 = 1;
+    //IRCF1 = 1;
+    //IRCF2 = 1;
+
+    //Set inputs as Digital
     PCFG3 = 1;
+    PCFG2 = 1;
+    PCFG1 = 1;
+    PCFG0 = 1;
 
     //Buttons (inputs)
-    TRISA0 = 1;
-    TRISA1 = 1;
-    TRISA2 = 1;
-    TRISA3 = 1;
+    TRISA = 0b11111111;
+    TRISB = 0b11111111;
 
-    //LEDS (outputs)
-    TRISB  = 0;
+    TRISD = 0b00000011;
 
-    // Create Buttons
+    // initialize tick counts
     for (i = 0; i < BUTTON_COUNT; i++){
-        Buttons[i].id = i;
-        Buttons[i].lastKnownState = 0;
-        Buttons[i].ticks = 0;
+        Buttons[i] = 0;
     }
 
     //default leds
-    PORTB = 0;
-    //LED1 = 0;
-    //LED2 = 0;
-
+    LED1 = 0;
+    LED2 = 0;
+    LED3 = 0;
+    LED4 = 0;
+    
     //Setup the timer
+    Timeout = 0;
     SysClock_Config();
-    Flags.Byte = 0;
+
+    IPEN = 0;
+    GIEH = 1;
+    PEIE = 1;
+}
+
+void UpdateOutput(signed int value)
+{
+    if(value == -1)
+        return;
+    
+    LED1 = isbitset(value, 0);
+    LED2 = isbitset(value, 1);
+    LED3 = isbitset(value, 2);
+    LED4 = isbitset(value, 3);    
 }
 
 
-bit ReadButton(unsigned char id)
+bit ReadButton(unsigned int id)
 {
-    return testbit(PORTA, id) > 0 ? 1 : 0;
+    switch(id){
+        case 0:
+            return BUTTON00;
+        case 1:
+            return BUTTON01;
+        case 2:
+            return BUTTON02;
+        case 3:
+            return BUTTON03;
+        case 4:
+            return BUTTON04;
+        case 5:
+            return BUTTON05;
+        case 6:
+            return BUTTON06;
+        case 7:
+            return BUTTON07;
+        case 8:
+            return BUTTON08;
+        case 9:
+            return BUTTON09;
+        case 10:
+            return BUTTON10;
+        case 11:
+            return BUTTON11;
+        case 12:
+            return BUTTON12;
+        case 13:
+            return BUTTON13;
+        case 14:
+            return BUTTON14;
+        case 15:
+            return BUTTON15;
+        default:
+            return 0;
+    }
 }
 
-unsigned char UpdateState(void)
+signed int GetState(void)
 {
-    unsigned char active = -1;
+    signed int active = -1;
     int id;
     for(id = 0; id < BUTTON_COUNT; id++)
     {        
         if(ReadButton(id))
         {
-            Buttons[id].ticks++;
+            Buttons[id]++;
         }
         else
         {
-            Buttons[id].ticks = 0;
-            Buttons[id].lastKnownState = 0;
+            Buttons[id] = 0;
         }
 
-        if(Buttons[id].ticks == BUTTON_CYCLES)
+        if(Buttons[id] == BUTTON_CYCLES)
         {
             active = id;
-        }
-
-        if(Buttons[id].ticks >= BUTTON_CYCLES)
-        {
-            Buttons[id].lastKnownState = 1;
         }
     }
 
     return active;
 }
 
+
 void interrupt isr (void)
-{    
-    if (T0IF && T0IE)
-    {
-        SysClock_ISR();
-        Flags.Bit.Timeout = 1;
+{
+    if(TMR0IF && TMR0IE){
+        TMR0IF = 0;               // clear IF before starting
+        TMR0   = 0xFFFF - 10;    // 1000us or 1ms before overflow
+        //Timeout = 1;
+        UpdateOutput(GetState());
     }
 }
 
