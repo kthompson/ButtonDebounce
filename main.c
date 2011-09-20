@@ -9,43 +9,14 @@
 #include "main.h"
 #include "clock.h"
 
-void main(void) {
-    //unsigned char state;
-    
+void main(void) {    
     setup();
-    UpdateOutput(15);
-    while(1)
-    {
-        //if (!Timeout)
-        //    return;
-
-        //Timeout = 0;           //clear timeout indicor
-
-        
-    }
-}
-
-void loop(void) {
-
-}
-void ButtonTest(int value) {   
-    if(ReadButton(value) == 1)
-    {
-        UpdateOutput(value);
-    }
+    
+    while(1);    
 }
 
 void setup(void) {
-    int i;  
-
-    //IDLEN = 0;
-    //enable internal RC clock
-    //SCS1 = 1;
-    //SCS0 = 1;
-    //set postscaler to 8MHz
-    //IRCF0 = 1;
-    //IRCF1 = 1;
-    //IRCF2 = 1;
+    int i;
 
     //Set inputs as Digital
     PCFG3 = 1;
@@ -71,7 +42,6 @@ void setup(void) {
     LED4 = 0;
     
     //Setup the timer
-    Timeout = 0;
     SysClock_Config();
 
     IPEN = 0;
@@ -161,7 +131,6 @@ void interrupt isr (void)
     if(TMR0IF && TMR0IE){
         TMR0IF = 0;               // clear IF before starting
         TMR0   = 0xFFFF - 10;    // 1000us or 1ms before overflow
-        //Timeout = 1;
         UpdateOutput(GetState());
     }
 }

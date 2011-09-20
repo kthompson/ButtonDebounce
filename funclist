@@ -1,9 +1,8 @@
-i2_UpdateOutput: CODE, 896 0 230
 _UpdateOutput: CODE, 666 0 230
-_main: CODE, 1492 0 30
+_main: CODE, 1260 0 12
 _GetState: CODE, 78 0 314
-_isr: CODE, 1300 0 158
-_setup: CODE, 1126 0 174
-_SysClock_Config: CODE, 1458 0 34
+_isr: CODE, 1068 0 158
+_setup: CODE, 896 0 172
+_SysClock_Config: CODE, 1226 0 34
 _ReadButton: CODE, 392 0 274
-Total: 1444
+Total: 1194

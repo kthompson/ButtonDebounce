@@ -39,8 +39,6 @@ __CONFIG(4, DEBUG_OFF & LVP_OFF);
 #define BUTTON_COUNT 16
 #define BUTTON_CYCLES 5
 
-volatile bit Timeout;
-
 //Globals
 unsigned long Buttons[BUTTON_COUNT];
 
@@ -50,8 +48,6 @@ unsigned long Buttons[BUTTON_COUNT];
 #define  isbitset(var, bit)   (testbit(var, bit) > 0 ? 1 : 0)
 
 void main (void);
-void loop(void);
-void ButtonTest(int value);
 void setup (void);
 bit ReadButton(unsigned int id);
 void UpdateOutput(signed int value);
